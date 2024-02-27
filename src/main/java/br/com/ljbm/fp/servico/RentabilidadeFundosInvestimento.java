@@ -2,9 +2,6 @@ package br.com.ljbm.fp.servico;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -117,12 +114,12 @@ public class RentabilidadeFundosInvestimento {
    	
 		ObjectMapper om = new ObjectMapper();
 		String jsonString = 
-			Files.readString(
-				Paths.get("C:\\Users\\luciana\\OneDrive\\luc&luca\\luciano\\git\\investimentos.bb\\src\\main\\resources\\static\\data.json"), StandardCharsets.UTF_8);
-//	    	restClientPortalBB.get()
-//				.uri(URL_treasurybondsinfo)
-//				.accept(MediaType.TEXT_HTML)
-//				.retrieve().body(String.class);
+//			Files.readString(
+//				Paths.get("C:\\Users\\luciana\\OneDrive\\luc&luca\\luciano\\git\\investimentos.bb\\src\\main\\resources\\static\\data.json"), StandardCharsets.UTF_8);
+	    	restClientPortalBB.get()
+				.uri(URL_treasurybondsinfo)
+				.accept(MediaType.TEXT_HTML)
+				.retrieve().body(String.class);
 		Root root = om.readValue(jsonString, Root.class);
 		var modelo = new FundoInvestimento();
 		modelo.setTipoFundoInvestimento(TipoFundoInvestimento.TesouroDireto);
