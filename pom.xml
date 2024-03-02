@@ -9,11 +9,13 @@
 		<version>3.2.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.ljbm.investimentos</groupId>
-	<artifactId>bb</artifactId>
+
+	<groupId>br.com.ljbm</groupId>
+	<artifactId>investimentos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bb</name>
-	<description>integrações com investimentos no BB</description>
+	<name>investimentos</name>
+	<description>regras de negócio para os investimentos</description>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
