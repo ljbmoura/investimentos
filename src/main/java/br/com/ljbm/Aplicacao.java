@@ -1,14 +1,14 @@
-package br.com.ljbm.fp;
+package br.com.ljbm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class
-BbApplication {
+Aplicacao {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BbApplication.class, args);
+		SpringApplication.run(Aplicacao.class, args);
 	}
 
 }

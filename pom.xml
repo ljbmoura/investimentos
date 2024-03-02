@@ -12,9 +12,9 @@
 
 	<groupId>br.com.ljbm</groupId>
 	<artifactId>investimentos</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>investimentos</name>
-	<description>regras de negócio para os investimentos</description>
+	<description>aplicação para gestão de investimentos</description>
 
 	<properties>
 		<java.version>17</java.version>

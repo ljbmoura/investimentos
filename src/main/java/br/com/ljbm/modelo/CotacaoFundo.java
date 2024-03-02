@@ -1,6 +1,4 @@
-package br.com.ljbm.fp.modelo;
-
-
+package br.com.ljbm.modelo;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -23,12 +21,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @EqualsAndHashCode
 @ToString
 @Getter
 @Setter
-@Entity()
+@Entity
 @Table(name = "CotacaoFundo")
 public class CotacaoFundo implements Serializable {
 
@@ -49,10 +46,6 @@ public class CotacaoFundo implements Serializable {
     @NotNull
     private BigDecimal valorCota;
 
-//    @Column(name="fundoInvestimento_ide", nullable = false)
-//    @NotNull
-//    private BigInteger fundoInvestimento_ide;
-    
     @JoinColumn(name="fundoInvestimento_ide",  nullable = false)
 	@ManyToOne(optional = false, fetch=FetchType.LAZY)
     private FundoInvestimento fundoInvestimento;

@@ -1,10 +1,10 @@
-package br.com.ljbm.investimentos.bb;
+package br.com.ljbm;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BbApplicationTests {
+class AplicacaoTests {
 
 	@Test
 	void contextLoads() {

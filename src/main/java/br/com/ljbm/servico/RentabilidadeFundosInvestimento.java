@@ -1,4 +1,4 @@
-package br.com.ljbm.fp.servico;
+package br.com.ljbm.servico;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,13 +25,13 @@ import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.ljbm.fp.dto.CotacaoFundoDTO;
-import br.com.ljbm.fp.modelo.CotacaoFundo;
-import br.com.ljbm.fp.modelo.FundoInvestimento;
-import br.com.ljbm.fp.modelo.TipoFundoInvestimento;
-import br.com.ljbm.fp.repositorio.CotacaoFundoRepo;
-import br.com.ljbm.fp.repositorio.FundoInvestimentoRepo;
-import br.com.ljbm.fp.servico.treasurybondsinfo.Root;
+import br.com.ljbm.dto.CotacaoFundoDTO;
+import br.com.ljbm.modelo.CotacaoFundo;
+import br.com.ljbm.modelo.FundoInvestimento;
+import br.com.ljbm.modelo.TipoFundoInvestimento;
+import br.com.ljbm.repositorio.CotacaoFundoRepo;
+import br.com.ljbm.repositorio.FundoInvestimentoRepo;
+import br.com.ljbm.servico.treasurybondsinfo.Root;
 
 @Service
 public class RentabilidadeFundosInvestimento {
@@ -78,7 +78,7 @@ public class RentabilidadeFundosInvestimento {
 						fi);
 				try {
 					c = cotacaoFundoRepo.mergePorDataFundo(c);
-					System.out.printf("%s persistindo.\n", c);
+					System.out.printf("%s sincronizada.\n", c);
 				} catch (DataIntegrityViolationException e) {
 //					System.out.println(e.getLocalizedMessage());
 				}
@@ -125,7 +125,7 @@ public class RentabilidadeFundosInvestimento {
 		modelo.setTipoFundoInvestimento(TipoFundoInvestimento.TesouroDireto);
 		Example<FundoInvestimento> _modelo = Example.of(modelo);
 		fundoInvestimentoRepo.findAll(_modelo).forEach(f -> {
-			System.out.println(f.getNome());
+//			System.out.println(f.getNome());
 			LocalDateTime dataCotacao = Instant.ofEpochMilli(root.response.trsrBondMkt.qtnDtTm.getTime())
 				      .atZone(ZoneId.systemDefault())
 				      .toLocalDateTime(); 
@@ -137,6 +137,7 @@ public class RentabilidadeFundosInvestimento {
 						f);
 				try {
 					c = cotacaoFundoRepo.mergePorDataFundo(c);
+					System.out.printf("%s sincronizada.\n", c);
 //					System.out.printf("%s persistindo.\n", c);
 				} catch (DataIntegrityViolationException e) {
 //					System.out.println(e.getLocalizedMessage());

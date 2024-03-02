@@ -1,4 +1,4 @@
-package br.com.ljbm.fp.dto;
+package br.com.ljbm.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,21 +1,14 @@
-package br.com.ljbm.fp.modelo;
+package br.com.ljbm.modelo;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
@@ -24,13 +17,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 @EqualsAndHashCode
-@ToString
+@ToString (of = {"ide", "nome", "corretora"})
 @Getter
 @Setter
 @Entity
 @Table(name = "FundoInvestimento")
-//, uniqueConstraints = @UniqueConstraint(columnNames = "nome"))
-//@Cacheable
+@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FundoInvestimento implements Serializable {
 
@@ -43,18 +35,25 @@ public class FundoInvestimento implements Serializable {
     private Long ide;
 
     @Column(name = "cnpj", length = 14)
+    @NotEmpty
     private String cnpj;
 
     @Column(name = "nome", nullable = false, length = 90)
-    @NotNull
+    @NotEmpty
     @Size(min = 5, max = 90)
     private String nome;
 
-	@Column(name = "tipoFundoInvestimento", nullable = true)
+	@Column(name = "tipoFundoInvestimento", nullable = false)
 	@Enumerated(EnumType.ORDINAL)
+    @NotNull
 	private TipoFundoInvestimento tipoFundoInvestimento;
 
 	@ManyToOne(optional = false, fetch=FetchType.LAZY)
-	private Corretora corretora;
+    @JoinColumn(name = "corretora_ide", nullable = false)
+    @NotNull
+    private Corretora corretora;
+
+    @OneToMany(mappedBy = "fundoInvestimento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Aplicacao> aplicacoes;
 
 }

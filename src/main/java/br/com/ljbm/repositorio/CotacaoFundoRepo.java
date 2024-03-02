@@ -1,10 +1,10 @@
-package br.com.ljbm.fp.repositorio;
+package br.com.ljbm.repositorio;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.ljbm.fp.modelo.CotacaoFundo;
+import br.com.ljbm.modelo.CotacaoFundo;
 
 @Repository
 public interface CotacaoFundoRepo extends JpaRepository<CotacaoFundo, Long>

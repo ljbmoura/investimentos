@@ -1,4 +1,4 @@
-package br.com.ljbm.fp.servico.treasurybondsinfo;
+package br.com.ljbm.servico.treasurybondsinfo;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
