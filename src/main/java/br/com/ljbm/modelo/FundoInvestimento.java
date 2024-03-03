@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @EqualsAndHashCode
-@ToString (of = {"ide", "nome", "corretora"})
+@ToString (of = {"ide", "nome"})
 @Getter
 @Setter
 @Entity
@@ -48,7 +48,7 @@ public class FundoInvestimento implements Serializable {
     @NotNull
 	private TipoFundoInvestimento tipoFundoInvestimento;
 
-	@ManyToOne(optional = false, fetch=FetchType.LAZY)
+	@ManyToOne(optional = false, fetch=FetchType.LAZY )
     @JoinColumn(name = "corretora_ide", nullable = false)
     @NotNull
     private Corretora corretora;

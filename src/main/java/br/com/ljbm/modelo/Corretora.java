@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 @EqualsAndHashCode
-@ToString(of = {"ide", "sigla"})
+@ToString(of = {"ide"})
 @Getter
 @Setter
 @Entity
@@ -47,7 +47,7 @@ public class Corretora implements java.io.Serializable {
 	@Column(name = "razaoSocial", nullable = false, length = 70, columnDefinition = "varchar(70)")
 	private String razaoSocial;
 
-	@Column(name = "sigla", nullable = false, unique = true, length = 10, columnDefinition = "char(10)")
+	@Column(name = "sigla", nullable = false)
 	private String sigla;
 
 	@Version
