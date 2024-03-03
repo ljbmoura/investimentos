@@ -21,10 +21,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@EqualsAndHashCode
-@ToString (of = {"ide", "dataCotacao", "valorCota", "ideFundoInvestimento"})
 @Getter
 @Setter
+//@ToString (of = {"ide", "dataCotacao", "valorCota", "ideFundoInvestimento"})
+@ToString (exclude = {"fundoInvestimento"})
+@EqualsAndHashCode
 @Entity
 @Table(name = "CotacaoFundo")
 public class CotacaoFundo implements Serializable {
@@ -48,6 +49,7 @@ public class CotacaoFundo implements Serializable {
 
 	@ManyToOne(optional = false, fetch=FetchType.LAZY)
     @JoinColumn(name="fundoInvestimento_ide",  nullable = false)
+    @NotNull
     private FundoInvestimento fundoInvestimento;
 
     @Column(name="fundoInvestimento_ide", insertable=false, updatable=false)

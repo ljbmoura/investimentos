@@ -16,14 +16,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@EqualsAndHashCode
-@ToString (of = {"ide", "nome"})
 @Getter
 @Setter
+@ToString (of = {"ide", "nome", "ideCorretora"})
+@EqualsAndHashCode
 @Entity
 @Table(name = "FundoInvestimento")
 @Cacheable
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class FundoInvestimento implements Serializable {
 
     @Serial
@@ -43,17 +43,25 @@ public class FundoInvestimento implements Serializable {
     @Size(min = 5, max = 90)
     private String nome;
 
+    @Column(name = "nomeAbreviado", nullable = false, length = 30)
+    @NotEmpty
+    @Size(min = 10, max = 30)
+    private String nomeAbreviado;
+
 	@Column(name = "tipoFundoInvestimento", nullable = false)
 	@Enumerated(EnumType.ORDINAL)
     @NotNull
 	private TipoFundoInvestimento tipoFundoInvestimento;
 
-//	@ManyToOne(optional = false, fetch=FetchType.LAZY )
-//    @JoinColumn(name = "corretora_ide", nullable = false)
-//    @NotNull
-//    private Corretora corretora;
+	@ManyToOne(optional = false, fetch=FetchType.LAZY )
+    @JoinColumn(name = "corretora_ide", nullable = false)
+    @NotNull
+    private Corretora corretora;
 
-    @OneToMany(mappedBy = "fundoInvestimento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "corretora_ide", insertable = false, updatable = false)
+    private Integer ideCorretora;
+
+    @OneToMany(mappedBy = "fundoInvestimento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Aplicacao> aplicacoes;
 
 }

@@ -1,6 +1,7 @@
 package br.com.ljbm.modelo;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -35,10 +36,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "Aplicacao")
 //@Cacheable
-public class Aplicacao implements java.io.Serializable {
+public class Aplicacao implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = -2999371111194178089L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="ide")
@@ -53,7 +55,6 @@ public class Aplicacao implements java.io.Serializable {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonSerialize(using = LocalDateSerializer.class)
 	@Column(name = "data", nullable = false)
-//	@Temporal(TemporalType.DATE)
 	@NotNull
 	private LocalDate dataCompra;
 

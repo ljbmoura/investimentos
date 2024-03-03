@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-//import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
@@ -39,7 +38,6 @@ import br.com.ljbm.modelo.FundoInvestimento;
 import br.com.ljbm.modelo.TipoFundoInvestimento;
 import br.com.ljbm.repositorio.FundoInvestimentoRepo;
 import br.com.ljbm.servico.treasurybondsinfo.Root;
-import br.com.ljbm.repositorio.CotacaoFundoRepo;
 
 
 @Service
@@ -57,7 +55,6 @@ public class CotacaoFundosIntegracao {
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
 
 	private final CotacaoFundoRepo cotacaoFundoRepo;
-
 
 	@Autowired
 	private KafkaTemplate<Object, Object> cotacaoFundoProdutor;
@@ -80,7 +77,7 @@ public class CotacaoFundosIntegracao {
     public void obtemCotacaoFundosBB() {
 		var cotacoes = new ArrayList<CotacaoFundoDTO>();
 		cotacoes.addAll(getCotasFundosBB("gfi7,802,9085,9089,1.bbx?tipo=1&nivel=1000", 2));
-//		cotacoes.addAll(getCotasFundosBB("gfi7,802,9085,9089,1.bbx?tipo=11&nivel=1000", 1));
+		cotacoes.addAll(getCotasFundosBB("gfi7,802,9085,9089,1.bbx?tipo=11&nivel=1000", 1));
 		filtraCotacoesEPublicaTopico(cotacoes, TipoFundoInvestimento.Acoes);
     }
 
@@ -130,8 +127,7 @@ public class CotacaoFundosIntegracao {
 	private void filtraCotacoesEPublicaTopico (List<CotacaoFundoDTO> cotacoes, TipoFundoInvestimento tfi) {
 		var modelo = new FundoInvestimento();
 		modelo.setTipoFundoInvestimento(tfi);
-		Example<FundoInvestimento> _modelo = Example.of(modelo);
-        for (FundoInvestimento f : fundoInvestimentoRepo.findAll(_modelo).subList(0, 1)) {
+        for (FundoInvestimento f : fundoInvestimentoRepo.findAll(Example.of(modelo))) {
             cotacoes.stream()
 				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cd -> {
