@@ -48,10 +48,10 @@ public class FundoInvestimento implements Serializable {
     @NotNull
 	private TipoFundoInvestimento tipoFundoInvestimento;
 
-	@ManyToOne(optional = false, fetch=FetchType.LAZY )
-    @JoinColumn(name = "corretora_ide", nullable = false)
-    @NotNull
-    private Corretora corretora;
+//	@ManyToOne(optional = false, fetch=FetchType.LAZY )
+//    @JoinColumn(name = "corretora_ide", nullable = false)
+//    @NotNull
+//    private Corretora corretora;
 
     @OneToMany(mappedBy = "fundoInvestimento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Aplicacao> aplicacoes;

@@ -1,6 +1,7 @@
 package br.com.ljbm.modelo;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -23,13 +24,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 @EqualsAndHashCode
-@ToString(of = {"ide"})
+//@ToString(of = {"ide", "sigla"})
 @Getter
 @Setter
 @Entity
 @Table(name = "Corretora")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Corretora implements java.io.Serializable {
+public class Corretora implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -47,16 +48,16 @@ public class Corretora implements java.io.Serializable {
 	@Column(name = "razaoSocial", nullable = false, length = 70, columnDefinition = "varchar(70)")
 	private String razaoSocial;
 
-	@Column(name = "sigla", nullable = false)
+	@Column(name = "sigla", nullable = false, unique = true)
 	private String sigla;
 
 	@Version
 	@Column(name = "versao", nullable = false)
 	private Integer versao;
 	
-	@JsonInclude(Include.NON_NULL)
+//	@JsonInclude(Include.NON_NULL)
 //	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@OneToMany(mappedBy="corretora", fetch=FetchType.LAZY)
-	private List<FundoInvestimento> fundosInvestimento;
+//	@OneToMany(mappedBy="corretora", fetch=FetchType.LAZY)
+//	private List<FundoInvestimento> fundosInvestimento;
 
 }

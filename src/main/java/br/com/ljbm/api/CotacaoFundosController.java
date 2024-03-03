@@ -26,7 +26,7 @@ public class CotacaoFundosController {
     @GetMapping("/")
     public void obtemCotacoesAtuais() throws IOException {
     	servico.obtemCotacaoFundosBB();
-    	servico.obtemCotacaoFundosTesouroDireto();
+//    	servico.obtemCotacaoFundosTesouroDireto();
     }
 
 }

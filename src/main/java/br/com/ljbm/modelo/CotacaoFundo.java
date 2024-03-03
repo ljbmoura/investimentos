@@ -22,7 +22,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @EqualsAndHashCode
-@ToString (of = {"ide", "dataCotacao", "valorCota"})
+@ToString (of = {"ide", "dataCotacao", "valorCota", "ideFundoInvestimento"})
 @Getter
 @Setter
 @Entity
@@ -46,9 +46,12 @@ public class CotacaoFundo implements Serializable {
     @NotNull
     private BigDecimal valorCota;
 
-    @JoinColumn(name="fundoInvestimento_ide",  nullable = false)
 	@ManyToOne(optional = false, fetch=FetchType.LAZY)
+    @JoinColumn(name="fundoInvestimento_ide",  nullable = false)
     private FundoInvestimento fundoInvestimento;
+
+    @Column(name="fundoInvestimento_ide", insertable=false, updatable=false)
+    private Long ideFundoInvestimento;
 
     public CotacaoFundo(LocalDate dataCotacao, BigDecimal valorCota, FundoInvestimento fundoInvestimento) {
         this.dataCotacao = dataCotacao;
@@ -56,5 +59,7 @@ public class CotacaoFundo implements Serializable {
         this.fundoInvestimento = fundoInvestimento;
     }
 
-    public CotacaoFundo() {}
+    public CotacaoFundo() {
+        // org.hibernate.InstantiationException: No default constructor for entity 'br.com.ljbm.modelo.CotacaoFundo'
+    }
 }

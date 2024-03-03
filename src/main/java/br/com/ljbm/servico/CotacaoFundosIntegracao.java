@@ -80,7 +80,7 @@ public class CotacaoFundosIntegracao {
     public void obtemCotacaoFundosBB() {
 		var cotacoes = new ArrayList<CotacaoFundoDTO>();
 		cotacoes.addAll(getCotasFundosBB("gfi7,802,9085,9089,1.bbx?tipo=1&nivel=1000", 2));
-		cotacoes.addAll(getCotasFundosBB("gfi7,802,9085,9089,1.bbx?tipo=11&nivel=1000", 1));
+//		cotacoes.addAll(getCotasFundosBB("gfi7,802,9085,9089,1.bbx?tipo=11&nivel=1000", 1));
 		filtraCotacoesEPublicaTopico(cotacoes, TipoFundoInvestimento.Acoes);
     }
 
@@ -131,7 +131,7 @@ public class CotacaoFundosIntegracao {
 		var modelo = new FundoInvestimento();
 		modelo.setTipoFundoInvestimento(tfi);
 		Example<FundoInvestimento> _modelo = Example.of(modelo);
-        for (FundoInvestimento f : fundoInvestimentoRepo.findAll(_modelo)) {
+        for (FundoInvestimento f : fundoInvestimentoRepo.findAll(_modelo).subList(0, 1)) {
             cotacoes.stream()
 				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cd -> {
@@ -147,16 +147,16 @@ public class CotacaoFundosIntegracao {
 		var modelo = new FundoInvestimento();
 		modelo.setNome(cf.nomeFundo());
 		Example<FundoInvestimento> _modelo = Example.of(modelo);
-		fundoInvestimentoRepo.findAll(_modelo).forEach( fi -> {
-			logger.info("fundo {}", fi);
-			var c = new CotacaoFundo( cf.dataCotacao(), cf.valorCota(), fi);
-			try {
-				c = cotacaoFundoRepo.mergePorDataFundo(c);
-				logger.info("{} sincronizada.", c);
-			} catch (DataIntegrityViolationException e) {
-				logger.error(e.getLocalizedMessage());
-			}
-		});
-	}
+        for (FundoInvestimento fi : fundoInvestimentoRepo.findAll(_modelo)) {
+            logger.info("atualizando cotação do {}", fi);
+            var c = new CotacaoFundo(cf.dataCotacao(), cf.valorCota(), fi);
+            try {
+				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(c);
+//                logger.info("{} sincronizada.", cMerged);
+            } catch (DataIntegrityViolationException e) {
+                logger.error(e.getLocalizedMessage());
+            }
+        }
+    }
 
 }
