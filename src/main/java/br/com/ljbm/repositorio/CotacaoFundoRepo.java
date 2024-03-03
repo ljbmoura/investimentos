@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.ljbm.modelo.CotacaoFundo;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -17,24 +18,21 @@ import java.util.Optional;
 public interface CotacaoFundoRepo extends JpaRepository<CotacaoFundo, Long>
 {
     Logger logger = LoggerFactory.getLogger(CotacaoFundosIntegracao.class);
+    @Transactional
     default CotacaoFundo mergePorDataFundo (CotacaoFundo cf) {
-        var fi = new FundoInvestimento();
-        fi.setIde(cf.getFundoInvestimento().getIde());
-        Example<CotacaoFundo> e = Example.of(new CotacaoFundo(cf.getDataCotacao(), null, fi));
-        Optional<CotacaoFundo> _cfAtual = this.findOne(e);
-        CotacaoFundo cfPersistido;
+        var filtro = new CotacaoFundo();
+        filtro.setDataCotacao(cf.getDataCotacao());
+        filtro.setIdeFundoInvestimento(cf.getFundoInvestimento().getIde());
+        Optional<CotacaoFundo> _cfAtual = this.findOne(Example.of(filtro));
+
+        final CotacaoFundo cfsincronizado;
         if (_cfAtual.isPresent()) {
-            var cfAtual = _cfAtual.get();
-            cfAtual.setValorCota(cf.getValorCota());
-            cfPersistido = this.save(cfAtual);
+            cfsincronizado = _cfAtual.get();
+            cfsincronizado.setValorCota(cf.getValorCota());
         } else {
-            cfPersistido = this.save(cf);
+            cfsincronizado = save(cf);
         }
-//        this.flush();
-//        logger.info("cotação {} {} {} sincronizada.", cfPersistido.getIde(), cfPersistido.getDataCotacao(), cfPersistido.getValorCota());
-//        var cfPersistido2 = this.getReferenceById(cfPersistido.getIde());
-        logger.info("{} sincronizada.", cfPersistido);
-        return cfPersistido;
+        return cfsincronizado;
     }
 }
 

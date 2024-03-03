@@ -152,7 +152,7 @@ public class CotacaoFundosIntegracao {
             var c = new CotacaoFundo(cf.dataCotacao(), cf.valorCota(), fi);
             try {
 				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(c);
-//                logger.info("{} sincronizada.", cMerged);
+                logger.info("{} sincronizada.", cMerged);
             } catch (DataIntegrityViolationException e) {
                 logger.error(e.getLocalizedMessage());
             }
