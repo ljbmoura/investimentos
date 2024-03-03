@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Service;
 
 
@@ -29,17 +30,17 @@ public class CotacaoFundosConsumidor {
 		this.fundoInvestimentoRepo = fundoInvestimentoRepo;
 	}
 
-	@KafkaListener(id = "cotacaoFundosGroup", topics = "cotacoes-fundos")
+	@KafkaListener(id = "CF-Group", topics = "cotacoes-fundos", concurrency = "3")
 	public void listen(CotacaoFundoDTO cf) {
 		logger.info("{} recebida", cf);
 		var filtro = new FundoInvestimento();
 		filtro.setNome(cf.nomeFundo());
         for (FundoInvestimento fi : fundoInvestimentoRepo.findAll(Example.of(filtro))) {
-            logger.info("atualizando cotação do {}", fi);
+            logger.debug("atualizando cotação do {}", fi);
             var c = new CotacaoFundo(cf.dataCotacao(), cf.valorCota(), fi);
             try {
 				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(c);
-                logger.info("{} sincronizada.", cMerged);
+                logger.debug("{} sincronizada.", cMerged);
             } catch (DataIntegrityViolationException e) {
                 logger.error(e.getLocalizedMessage());
             }
