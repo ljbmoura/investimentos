@@ -1,4 +1,4 @@
-package br.com.ljbm.servico.treasurybondsinfo;
+package br.com.ljbm.dto;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,7 +9,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 
-public class Root {
+public class TreasuryBondsInfoDTO {
 	@Override
 	public String toString() {
 		return "Root [responseStatus=" + responseStatus + ", responseStatusText=" + responseStatusText + ", statusInfo="
@@ -105,7 +105,7 @@ public class Root {
 		ObjectMapper om = new ObjectMapper();
 		String myJsonString = Files.readString(
 				Paths.get("C:\\Users\\luciana\\OneDrive\\luc&luca\\luciano\\git\\investimentos.bb\\src\\main\\resources\\static\\data.json"), StandardCharsets.UTF_8);
-		Root root = om.readValue(myJsonString, Root.class); 
+		TreasuryBondsInfoDTO root = om.readValue(myJsonString, TreasuryBondsInfoDTO.class);
 
 		System.out.println(root.toString());
 	}

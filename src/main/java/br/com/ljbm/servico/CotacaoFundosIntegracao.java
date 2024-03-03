@@ -12,21 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import br.com.ljbm.modelo.CotacaoFundo;
-import br.com.ljbm.repositorio.CotacaoFundoRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -37,7 +33,7 @@ import br.com.ljbm.dto.CotacaoFundoDTO;
 import br.com.ljbm.modelo.FundoInvestimento;
 import br.com.ljbm.modelo.TipoFundoInvestimento;
 import br.com.ljbm.repositorio.FundoInvestimentoRepo;
-import br.com.ljbm.servico.treasurybondsinfo.Root;
+import br.com.ljbm.dto.TreasuryBondsInfoDTO;
 
 
 @Service
@@ -54,24 +50,21 @@ public class CotacaoFundosIntegracao {
 
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
 
-	private final CotacaoFundoRepo cotacaoFundoRepo;
-
-	@Autowired
-	private KafkaTemplate<Object, Object> cotacaoFundoProdutor;
+	private final KafkaTemplate<Object, Object> cotacaoFundoProdutor;
 
     public CotacaoFundosIntegracao(
 			RestClient.Builder restClientBuilder,
 //			SslBundles sslBundles,
-			CotacaoFundoRepo cotacaoFundoRepo,
-			FundoInvestimentoRepo fundoInvestimentoRepo) {
+			FundoInvestimentoRepo fundoInvestimentoRepo,
+			KafkaTemplate<Object, Object> cotacaoFundoProdutor) {
 
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
 //			.withSslBundle(sslBundles.getBundle("mybundle"))
             .withReadTimeout(Duration.ofSeconds(5)
 		);
         this.restClientPortalBB = restClientBuilder.baseUrl(URL_PORTAL_BB).requestFactory(ClientHttpRequestFactories.get(settings)).build();
-		this.cotacaoFundoRepo = cotacaoFundoRepo;
 		this.fundoInvestimentoRepo = fundoInvestimentoRepo;
+		this.cotacaoFundoProdutor = cotacaoFundoProdutor;
 	}
 
     public void obtemCotacaoFundosBB() {
@@ -113,7 +106,7 @@ public class CotacaoFundosIntegracao {
 				.accept(MediaType.TEXT_HTML)
 				.retrieve().body(String.class);
 
-		Root root = om.readValue(jsonString, Root.class);
+		TreasuryBondsInfoDTO root = om.readValue(jsonString, TreasuryBondsInfoDTO.class);
 		LocalDateTime dataCotacao = Instant.ofEpochMilli(root.response.trsrBondMkt.qtnDtTm.getTime())
 				.atZone(ZoneId.systemDefault())
 				.toLocalDateTime();
@@ -125,33 +118,15 @@ public class CotacaoFundosIntegracao {
 	}
 
 	private void filtraCotacoesEPublicaTopico (List<CotacaoFundoDTO> cotacoes, TipoFundoInvestimento tfi) {
-		var modelo = new FundoInvestimento();
-		modelo.setTipoFundoInvestimento(tfi);
-        for (FundoInvestimento f : fundoInvestimentoRepo.findAll(Example.of(modelo))) {
+		var filtro = new FundoInvestimento();
+		filtro.setTipoFundoInvestimento(tfi);
+        for (FundoInvestimento f : fundoInvestimentoRepo.findAll(Example.of(filtro))) {
             cotacoes.stream()
 				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cd -> {
                 	cotacaoFundoProdutor.send("cotacoes-fundos", cd);
 					logger.info("{} enviada.", cd);
         		});
-        }
-    }
-
-	@KafkaListener(id = "cotacaoFundosGroup", topics = "cotacoes-fundos")
-	public void listen(CotacaoFundoDTO cf) {
-		logger.info("{} recebida", cf);
-		var modelo = new FundoInvestimento();
-		modelo.setNome(cf.nomeFundo());
-		Example<FundoInvestimento> _modelo = Example.of(modelo);
-        for (FundoInvestimento fi : fundoInvestimentoRepo.findAll(_modelo)) {
-            logger.info("atualizando cotação do {}", fi);
-            var c = new CotacaoFundo(cf.dataCotacao(), cf.valorCota(), fi);
-            try {
-				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(c);
-                logger.info("{} sincronizada.", cMerged);
-            } catch (DataIntegrityViolationException e) {
-                logger.error(e.getLocalizedMessage());
-            }
         }
     }
 
