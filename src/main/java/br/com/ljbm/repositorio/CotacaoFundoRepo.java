@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface CotacaoFundoRepo extends JpaRepository<CotacaoFundo, Long>
 {
     Logger logger = LoggerFactory.getLogger(CotacaoFundosIntegracao.class);
-    @Transactional
+//    @Transactional
     default CotacaoFundo mergePorDataFundo (CotacaoFundo cf) {
         var filtro = new CotacaoFundo();
         filtro.setDataCotacao(cf.getDataCotacao());

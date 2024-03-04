@@ -123,9 +123,9 @@ public class CotacaoFundosIntegracao {
         for (FundoInvestimento f : fundoInvestimentoRepo.findAll(Example.of(filtro))) {
             cotacoes.stream()
 				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
-                .findFirst().ifPresent(cd -> {
-                	cotacaoFundoProdutor.send("cotacoes-fundos", f.getIde().toString(), cd);
-					logger.info("{} enviada, chave {}", cd, f.getIde().toString());
+                .findFirst().ifPresent(cotacaoFI -> {
+                	cotacaoFundoProdutor.send("cotacoes-fundos", f.getIde().toString(), cotacaoFI);
+					logger.info("k={} v={} enviada", f.getIde().toString(), cotacaoFI);
         		});
         }
     }
