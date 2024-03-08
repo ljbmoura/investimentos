@@ -21,20 +21,4 @@ Aplicacao {
 		return new JsonMessageConverter();
 	}
 
-//	@KafkaListener(id = "cotacaoFundosGroup", topics = "cotacoes-fundos")
-//	public void listen(CotacaoFundoDTO cf) {
-//		logger.info("{} recebida", cf);
-//		FundoInvestimento fi = new FundoInvestimento();
-//		fi.setIde(fi.getIde());
-//		var c = new CotacaoFundo(
-//				cf.dataCotacao(),
-//				cf.valorCota(),
-//				fi);
-//		try {
-//			c = cotacaoFundoRepo.mergePorDataFundo(c);
-//			logger.info("{} sincronizada.", c);
-//		} catch (DataIntegrityViolationException e) {
-//			logger.error(e.getLocalizedMessage());
-//		}
-//	}
 }

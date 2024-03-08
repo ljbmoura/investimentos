@@ -13,6 +13,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,23 +42,52 @@ public class CotacaoFundosConsumidor {
 			groupId = "CF",
 			concurrency = "3") // pois o tópico foi criado com 3 partições
 	@Transactional
-	public void listen (
+	public void atualizacaoCotacaoFundoListen (
 		CotacaoFundoDTO cfDTO,
 		@Header(KafkaHeaders.RECEIVED_PARTITION) int particao,
 //		@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
 //		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
 		@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
 		executorService.submit( () -> {
-			logger.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+			logger.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 			try {
 				var cf = new CotacaoFundo(cfDTO.dataCotacao(), cfDTO.valorCota(),
 						fundoInvestimentoRepo.getReferenceById(Long.valueOf(chaveFundoInvestimento)));
 				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(cf);
-				logger.info("{} sincronizada.", cMerged);
+				logger.debug("{} sincronizada.", cMerged);
 			} catch (DataIntegrityViolationException e) {
 				logger.error(e.getLocalizedMessage());
 			}
 		});
+	}
+
+	@KafkaListener (
+			id = "SELIC-Group",
+			topics = "cotacoes-fundos",
+			groupId = "SELIC",
+			concurrency = "3") // pois o tópico foi criado com 3 partições
+	@Transactional
+	public void atualizacaoCoeficientesSerieSELIClisten (
+			CotacaoFundoDTO cfDTO,
+			@Header(KafkaHeaders.RECEIVED_PARTITION) int particao,
+//		@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+//		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
+			@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
+//		executorService.submit( () -> {
+			logger.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+
+//		List<PosicaoTituloPorAgente> extrato = new ArrayList<PosicaoTituloPorAgente>();
+		LocalDate dataRefAux = cfDTO.dataCotacao();
+//		List<FundoInvestimento> fundos = servicoFPDominio.getAllFundoInvestimento();
+//		fundos.stream().forEach(fundo -> {
+//			posicao.setCompras(fundo.getAplicacoes().stream().filter(a -> ! a.getDataCompra().isAfter(dataRefAux) && a.getSaldoCotas().compareTo(BigDecimal.ZERO) > 0)
+//					.collect(Collectors.toList()));
+//			if (posicao.getCompras().size() > 0) {
+//				extrato.add(posicao);
+//			}
+//		});
+
+//		});
 	}
 
 }
