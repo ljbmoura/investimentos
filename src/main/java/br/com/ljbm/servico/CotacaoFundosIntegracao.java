@@ -125,7 +125,7 @@ public class CotacaoFundosIntegracao {
 				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cotacaoFI -> {
                 	cotacaoFundoProdutor.send("cotacoes-fundos", f.getIde().toString(), cotacaoFI);
-					logger.info("k={} v={} enviada", f.getIde().toString(), cotacaoFI);
+					logger.debug("k={} v={} enviada", f.getIde().toString(), cotacaoFI);
         		});
         }
     }

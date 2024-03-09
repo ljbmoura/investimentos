@@ -54,7 +54,7 @@ public class CotacaoFundosConsumidor {
 				var cf = new CotacaoFundo(cfDTO.dataCotacao(), cfDTO.valorCota(),
 						fundoInvestimentoRepo.getReferenceById(Long.valueOf(chaveFundoInvestimento)));
 				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(cf);
-				logger.debug("{} sincronizada.", cMerged);
+				logger.info("sincronizada {}.", cMerged);
 			} catch (DataIntegrityViolationException e) {
 				logger.error(e.getLocalizedMessage());
 			}
@@ -74,7 +74,7 @@ public class CotacaoFundosConsumidor {
 //		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
 			@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
 //		executorService.submit( () -> {
-			logger.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+			logger.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 
 //		List<PosicaoTituloPorAgente> extrato = new ArrayList<PosicaoTituloPorAgente>();
 		LocalDate dataRefAux = cfDTO.dataCotacao();

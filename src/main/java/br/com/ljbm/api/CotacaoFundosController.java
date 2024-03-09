@@ -18,12 +18,12 @@ public class CotacaoFundosController {
         this.servico = servico;
     }
 
-//    @PostMapping("/")
+//    @PostMapping()
 //    public void obtemRentabilidade() {
 //       this.servico.tabelaRentabilidade();
 //    }
     
-    @GetMapping("/")
+    @GetMapping()
     public void obtemCotacoesAtuais() throws IOException {
     	servico.obtemCotacaoFundosBB();
     	servico.obtemCotacaoFundosTesouroDireto();
