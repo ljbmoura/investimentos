@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rentabilidade")
+@RequestMapping("/cotacao-fundos")
 public class CotacaoFundosController {
 
 	private final CotacaoFundosIntegracao servico;
@@ -23,7 +23,7 @@ public class CotacaoFundosController {
 //       this.servico.tabelaRentabilidade();
 //    }
     
-    @GetMapping()
+    @GetMapping("atualizar")
     public void obtemCotacoesAtuais() throws IOException {
     	servico.obtemCotacaoFundosBB();
     	servico.obtemCotacaoFundosTesouroDireto();

@@ -13,14 +13,13 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 @Service
-public class CotacaoFundosConsumidor {
-	private static final Logger logger = LoggerFactory.getLogger(CotacaoFundosConsumidor.class);
+public class CotacaoFundoConsumidor {
+	private static final Logger logger = LoggerFactory.getLogger(CotacaoFundoConsumidor.class);
 
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
 
@@ -28,7 +27,7 @@ public class CotacaoFundosConsumidor {
 
 	ExecutorService executorService = Executors.newFixedThreadPool(30);
 
-    public CotacaoFundosConsumidor(
+    public CotacaoFundoConsumidor(
 			CotacaoFundoRepo cotacaoFundoRepo,
 			FundoInvestimentoRepo fundoInvestimentoRepo) {
 
@@ -74,10 +73,10 @@ public class CotacaoFundosConsumidor {
 //		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
 			@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
 //		executorService.submit( () -> {
-			logger.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+			logger.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 
 //		List<PosicaoTituloPorAgente> extrato = new ArrayList<PosicaoTituloPorAgente>();
-		LocalDate dataRefAux = cfDTO.dataCotacao();
+//		LocalDate dataRefAux = cfDTO.dataCotacao();
 //		List<FundoInvestimento> fundos = servicoFPDominio.getAllFundoInvestimento();
 //		fundos.stream().forEach(fundo -> {
 //			posicao.setCompras(fundo.getAplicacoes().stream().filter(a -> ! a.getDataCompra().isAfter(dataRefAux) && a.getSaldoCotas().compareTo(BigDecimal.ZERO) > 0)

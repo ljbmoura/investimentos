@@ -23,7 +23,6 @@ import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.data.domain.Example;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -50,13 +49,13 @@ public class CotacaoFundosIntegracao {
 
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
 
-	private final KafkaTemplate<Object, Object> cotacaoFundoProdutor;
+	private final CotacaoFundoProdutor cotacaoFundoProdutor;
 
     public CotacaoFundosIntegracao(
 			RestClient.Builder restClientBuilder,
 //			SslBundles sslBundles,
 			FundoInvestimentoRepo fundoInvestimentoRepo,
-			KafkaTemplate<Object, Object> cotacaoFundoProdutor) {
+			CotacaoFundoProdutor cotacaoFundoProdutor) {
 
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
 //			.withSslBundle(sslBundles.getBundle("mybundle"))
@@ -124,8 +123,11 @@ public class CotacaoFundosIntegracao {
             cotacoes.stream()
 				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cotacaoFI -> {
-                	cotacaoFundoProdutor.send("cotacoes-fundos", f.getIde().toString(), cotacaoFI);
-					logger.debug("k={} v={} enviada", f.getIde().toString(), cotacaoFI);
+					// Fixme talvez seja o caso de não usar chave neste tópico para que a
+					// distribuição nas partições seja round-robin.
+					// Poderia-se incluir o id do agente financeiro no DTO
+                	cotacaoFundoProdutor.sendMessage(f.getIde().toString(), cotacaoFI);
+
         		});
         }
     }

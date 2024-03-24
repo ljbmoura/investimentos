@@ -16,9 +16,4 @@ Aplicacao {
 		SpringApplication.run(Aplicacao.class, args);
 	}
 
-	@Bean
-	public RecordMessageConverter converter() {
-		return new JsonMessageConverter();
-	}
-
 }

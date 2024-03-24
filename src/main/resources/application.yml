@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=ljbm;encrypt=false;trustServerCertificate=false
+#    url: jdbc:sqlserver://192.168.0.11:1433;databaseName=ljbm;encrypt=false;trustServerCertificate=false
+    username: sa
+    password: root
+
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: none
+    properties.hibernate.format_sql: true
+#    database-platform: org.hibernate.dialect.SQLServerDialect
+#    properties.hibernate.dialect: org.hibernate.dialect.SQLServerDialect
+    properties.hibernate.jdbc.lob.non_contextual_creation: false
+## necessario para hibernate respeitar propriedade 'name' das anota��es @Column, @Table etc
+#spring.jpa.hibernate.naming.implicit-strategy=org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  kafka:
+    bootstrap-servers: localhost:9092
+# Best practice for Kafka producer to prevent data loss
+    acks: all
+#    key:
+#      serializer: org.apache.kafka.common.serialization.StringSerializer
+#      deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#    value:
+#      serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
