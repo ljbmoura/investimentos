@@ -1,5 +1,6 @@
 package br.com.ljbm.servico;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
 @Service
+@Slf4j
 public class CotacaoFundoProdutor {
-    private static final Logger logger = LoggerFactory.getLogger(CotacaoFundoProdutor.class);
     private static final String TOPICO = "cotacoes-fundos";
 
     @Autowired private
@@ -26,6 +27,6 @@ public class CotacaoFundoProdutor {
                         logger.info("Produced event to topic %s: key = %-10s value = %s%n", TOPICO, chave, valor);
                 });*/
         kafkaTemplate.send(TOPICO, chave, valor);
-        logger.info("k={} v={} enviada", chave, valor);
+        log.info("k={} v={} enviada", chave, valor);
     }
 }

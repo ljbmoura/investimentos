@@ -16,12 +16,12 @@ public class KafkaTopicConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAdress;
 
-    @Bean
+/*    @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAdress);
         return new KafkaAdmin(configs);
-    }
+    }*/
 
     @Bean
     public RecordMessageConverter converter() {

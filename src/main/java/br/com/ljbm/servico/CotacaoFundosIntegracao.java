@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ import br.com.ljbm.modelo.TipoFundoInvestimento;
 import br.com.ljbm.repositorio.FundoInvestimentoRepo;
 import br.com.ljbm.dto.TreasuryBondsInfoDTO;
 
-
+@Slf4j
 @Service
 public class CotacaoFundosIntegracao {
 	private static final DateTimeFormatter DATA_BR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -42,8 +43,6 @@ public class CotacaoFundosIntegracao {
     private static final String URL_PORTAL_BB = "https://www37.bb.com.br/portalbb/tabelaRentabilidade/rentabilidade/";
     
     private static final String URL_treasurybondsinfo = "https://www.tesourodireto.com.br/json/br/com/b3/tesourodireto/service/api/treasurybondsinfo.json";
-
-	private final Logger logger = LoggerFactory.getLogger(CotacaoFundosIntegracao.class);
 
 	private final RestClient restClientPortalBB;
 
@@ -127,6 +126,7 @@ public class CotacaoFundosIntegracao {
 					// distribuição nas partições seja round-robin.
 					// Poderia-se incluir o id do agente financeiro no DTO
                 	cotacaoFundoProdutor.sendMessage(f.getIde().toString(), cotacaoFI);
+
 
         		});
         }

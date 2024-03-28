@@ -5,6 +5,7 @@ import br.com.ljbm.modelo.CotacaoFundo;
 import br.com.ljbm.repositorio.CotacaoFundoRepo;
 import br.com.ljbm.repositorio.FundoInvestimentoRepo;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,9 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+@Slf4j
 @Service
 public class CotacaoFundoConsumidor {
-	private static final Logger logger = LoggerFactory.getLogger(CotacaoFundoConsumidor.class);
 
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
 
@@ -48,14 +49,15 @@ public class CotacaoFundoConsumidor {
 //		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
 		@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
 		executorService.submit( () -> {
-			logger.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+			log.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 			try {
 				var cf = new CotacaoFundo(cfDTO.dataCotacao(), cfDTO.valorCota(),
 						fundoInvestimentoRepo.getReferenceById(Long.valueOf(chaveFundoInvestimento)));
 				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(cf);
-				logger.info("sincronizada {}.", cMerged);
+				log.info("sincronizada {}.", cMerged);
+
 			} catch (DataIntegrityViolationException e) {
-				logger.error(e.getLocalizedMessage());
+				log.error(e.getLocalizedMessage());
 			}
 		});
 	}
@@ -73,7 +75,7 @@ public class CotacaoFundoConsumidor {
 //		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
 			@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
 //		executorService.submit( () -> {
-			logger.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+			log.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 
 //		List<PosicaoTituloPorAgente> extrato = new ArrayList<PosicaoTituloPorAgente>();
 //		LocalDate dataRefAux = cfDTO.dataCotacao();
