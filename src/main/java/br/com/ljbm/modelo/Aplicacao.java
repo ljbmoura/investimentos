@@ -15,6 +15,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,8 +33,8 @@ import lombok.Setter;
  * 
  */
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 @Entity
 @Table(name = "Aplicacao")
 //@Cacheable
@@ -83,15 +85,13 @@ public class Aplicacao implements Serializable {
 		return valorAplicado.divide(quantidadeCotas, 9, RoundingMode.DOWN);
 	}
 
-	public Aplicacao(LocalDate data, Long documento, BigDecimal valorAplicado,
-					 BigDecimal quantidadeCotas, BigDecimal saldoCotas) {
-		this.dataCompra = data;
-		this.documento = documento;
-		this.valorAplicado = valorAplicado;
-		this.quantidadeCotas = quantidadeCotas;
-		this.saldoCotas = saldoCotas;
-	}
-
-//	public Aplicacao() {}
+//	public Aplicacao(LocalDate data, Long documento, BigDecimal valorAplicado,
+//					 BigDecimal quantidadeCotas, BigDecimal saldoCotas) {
+//		this.dataCompra = data;
+//		this.documento = documento;
+//		this.valorAplicado = valorAplicado;
+//		this.quantidadeCotas = quantidadeCotas;
+//		this.saldoCotas = saldoCotas;
+//	}
 
 }

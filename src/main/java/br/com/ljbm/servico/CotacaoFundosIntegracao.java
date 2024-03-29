@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.data.domain.Example;
@@ -126,8 +125,6 @@ public class CotacaoFundosIntegracao {
 					// distribuição nas partições seja round-robin.
 					// Poderia-se incluir o id do agente financeiro no DTO
                 	cotacaoFundoProdutor.sendMessage(f.getIde().toString(), cotacaoFI);
-
-
         		});
         }
     }

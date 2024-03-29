@@ -5,13 +5,11 @@ import br.com.ljbm.modelo.CotacaoFundo;
 import br.com.ljbm.repositorio.CotacaoFundoRepo;
 import br.com.ljbm.repositorio.FundoInvestimentoRepo;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
@@ -20,6 +18,7 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CotacaoFundoConsumidor {
 
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
@@ -28,27 +27,17 @@ public class CotacaoFundoConsumidor {
 
 	ExecutorService executorService = Executors.newFixedThreadPool(30);
 
-    public CotacaoFundoConsumidor(
-			CotacaoFundoRepo cotacaoFundoRepo,
-			FundoInvestimentoRepo fundoInvestimentoRepo) {
-
-		this.cotacaoFundoRepo = cotacaoFundoRepo;
-		this.fundoInvestimentoRepo = fundoInvestimentoRepo;
-	}
-
 	@KafkaListener (
 			id = "CF-Group",
 			topics = "cotacoes-fundos",
 			groupId = "CF",
 			concurrency = "3") // pois o tópico foi criado com 3 partições
 	@Transactional
-	public void atualizacaoCotacaoFundoListen (
-		CotacaoFundoDTO cfDTO,
-		@Header(KafkaHeaders.RECEIVED_PARTITION) int particao,
-//		@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-//		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
-		@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
+	public void atualizacaoCotacaoFundoListen (ConsumerRecord<String, CotacaoFundoDTO> mensagem) {
 		executorService.submit( () -> {
+			var cfDTO = mensagem.value();
+			var chaveFundoInvestimento = mensagem.key();
+			var particao = mensagem.topic();
 			log.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 			try {
 				var cf = new CotacaoFundo(cfDTO.dataCotacao(), cfDTO.valorCota(),
@@ -69,13 +58,10 @@ public class CotacaoFundoConsumidor {
 			concurrency = "3") // pois o tópico foi criado com 3 partições
 	@Transactional
 	public void atualizacaoCoeficientesSerieSELIClisten (
-			CotacaoFundoDTO cfDTO,
-			@Header(KafkaHeaders.RECEIVED_PARTITION) int particao,
-//		@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-//		@Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts)
-			@Header(KafkaHeaders.RECEIVED_KEY) String chaveFundoInvestimento) {
+			ConsumerRecord<String, CotacaoFundoDTO> mensagem
+	) {
 //		executorService.submit( () -> {
-			log.info("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
+			log.info("k={} v={} recebida da partição {}", mensagem.key(), mensagem.value(), mensagem.topic());
 
 //		List<PosicaoTituloPorAgente> extrato = new ArrayList<PosicaoTituloPorAgente>();
 //		LocalDate dataRefAux = cfDTO.dataCotacao();

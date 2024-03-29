@@ -6,20 +6,16 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @ToString (of = {"ide", "nome", "ideCorretora"})
-@EqualsAndHashCode
 @Entity
 @Table(name = "FundoInvestimento")
 @Cacheable

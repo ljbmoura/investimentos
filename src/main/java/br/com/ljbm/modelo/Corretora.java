@@ -2,31 +2,18 @@ package br.com.ljbm.modelo;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
-
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
-@EqualsAndHashCode
 //@ToString(of = {"ide", "sigla"})
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "Corretora")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)

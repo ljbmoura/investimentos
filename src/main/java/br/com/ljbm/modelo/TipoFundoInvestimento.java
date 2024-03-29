@@ -1,8 +1,10 @@
 package br.com.ljbm.modelo;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum TipoFundoInvestimento {
 
 	TesouroDireto("TesouroDireto", 1L),
@@ -12,10 +14,5 @@ public enum TipoFundoInvestimento {
 
 	private final String nome;
 	private final Long id;
-
-	TipoFundoInvestimento(String nome, Long id) {
-		this.nome = nome;
-		this.id = id;
-	}
 
 }

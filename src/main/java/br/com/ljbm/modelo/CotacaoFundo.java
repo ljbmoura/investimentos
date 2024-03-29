@@ -16,16 +16,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 //@ToString (of = {"ide", "dataCotacao", "valorCota", "ideFundoInvestimento"})
 @ToString (exclude = {"fundoInvestimento"})
-@EqualsAndHashCode
 @Entity
 @Table(name = "CotacaoFundo")
 public class CotacaoFundo implements Serializable {
@@ -61,7 +57,4 @@ public class CotacaoFundo implements Serializable {
         this.fundoInvestimento = fundoInvestimento;
     }
 
-    public CotacaoFundo() {
-        // org.hibernate.InstantiationException: No default constructor for entity 'br.com.ljbm.modelo.CotacaoFundo'
-    }
 }
