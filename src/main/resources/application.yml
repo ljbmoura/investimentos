@@ -4,6 +4,10 @@ server:
 logging:
   level:
     root: info
+    org.apache.kafka: warn
+    br.com.ljbm: debug
+    io.confluent: warn
+    org.springframework.kafka.config: warn
 
 spring:
   datasource:
@@ -25,8 +29,6 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-# Best practice for Kafka producer to prevent data loss
-    acks: all
 #    key:
 #      serializer: org.apache.kafka.common.serialization.StringSerializer
 #      deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -34,8 +36,10 @@ spring:
 #      serializer: org.springframework.kafka.support.serializer.JsonSerializer
 #      deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
     producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    # Best practice for Kafka producer to prevent data loss
+      acks: all
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
     consumer:
       auto-offset-reset: earliest

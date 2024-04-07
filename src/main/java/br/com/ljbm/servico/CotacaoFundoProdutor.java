@@ -19,6 +19,6 @@ public class CotacaoFundoProdutor {
     public void sendMessage(String chave, CotacaoFundoDTO valor) {
 
         kafkaTemplate.send(new ProducerRecord<>(TOPICO_DESTINO, chave, valor));
-        //log.info("k={} v={} enviada", chave, valor);
+        log.info("k={} v={} enviada", chave, valor);
     }
 }
