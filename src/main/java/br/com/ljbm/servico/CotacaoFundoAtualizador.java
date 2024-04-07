@@ -19,14 +19,14 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CotacaoFundoConsumidor {
+public class CotacaoFundoAtualizador {
 
 	private final FundoInvestimentoRepo fundoInvestimentoRepo;
 
 	private final CotacaoFundoRepo cotacaoFundoRepo;
 
 	ExecutorService executorService = Executors.newFixedThreadPool(30);
-
+/*
 	@KafkaListener (
 			id = "CF-Group",
 			topics = "cotacoes-fundos",
@@ -50,31 +50,5 @@ public class CotacaoFundoConsumidor {
 			}
 		});
 	}
-
-	@KafkaListener (
-			id = "SELIC-Group",
-			topics = "cotacoes-fundos",
-			groupId = "SELIC",
-			concurrency = "3") // pois o tópico foi criado com 3 partições
-	@Transactional
-	public void atualizacaoCoeficientesSerieSELIClisten (
-			ConsumerRecord<String, CotacaoFundoDTO> mensagem
-	) {
-//		executorService.submit( () -> {
-			log.info("k={} v={} recebida da partição {}", mensagem.key(), mensagem.value(), mensagem.topic());
-
-//		List<PosicaoTituloPorAgente> extrato = new ArrayList<PosicaoTituloPorAgente>();
-//		LocalDate dataRefAux = cfDTO.dataCotacao();
-//		List<FundoInvestimento> fundos = servicoFPDominio.getAllFundoInvestimento();
-//		fundos.stream().forEach(fundo -> {
-//			posicao.setCompras(fundo.getAplicacoes().stream().filter(a -> ! a.getDataCompra().isAfter(dataRefAux) && a.getSaldoCotas().compareTo(BigDecimal.ZERO) > 0)
-//					.collect(Collectors.toList()));
-//			if (posicao.getCompras().size() > 0) {
-//				extrato.add(posicao);
-//			}
-//		});
-
-//		});
-	}
-
+*/
 }

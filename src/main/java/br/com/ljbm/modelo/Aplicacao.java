@@ -15,10 +15,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Aplicação entity
@@ -33,8 +30,12 @@ import lombok.Setter;
  * 
  */
 
-@Data
+//@Data
+@ToString (of = {"ide", "dataCompra", "saldoCotas"})
+@Setter
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Aplicacao")
 //@Cacheable

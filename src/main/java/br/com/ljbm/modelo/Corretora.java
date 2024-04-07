@@ -2,17 +2,16 @@ package br.com.ljbm.modelo;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
+
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 
 //@ToString(of = {"ide", "sigla"})
-@Data
+//@Data
+@ToString (of = {"ide", "cnpj"})
 @NoArgsConstructor
 @Entity
 @Table(name = "Corretora")
@@ -44,7 +43,8 @@ public class Corretora implements Serializable {
 	
 //	@JsonInclude(Include.NON_NULL)
 //	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-//	@OneToMany(mappedBy="corretora", fetch=FetchType.LAZY)
-//	private List<FundoInvestimento> fundosInvestimento;
+	@OneToMany(mappedBy="corretora",
+			cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<FundoInvestimento> fundosInvestimento;
 
 }

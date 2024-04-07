@@ -1,20 +1,21 @@
 package br.com.ljbm.modelo;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
 
-@Data
+//@Data
 @NoArgsConstructor
+@Getter
+@Setter
 @ToString (of = {"ide", "nome", "ideCorretora"})
 @Entity
 @Table(name = "FundoInvestimento")
@@ -23,7 +24,7 @@ import jakarta.validation.constraints.Size;
 public class FundoInvestimento implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3905125413892087441L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +58,8 @@ public class FundoInvestimento implements Serializable {
     @Column(name = "corretora_ide", insertable = false, updatable = false)
     private Integer ideCorretora;
 
-    @OneToMany(mappedBy = "fundoInvestimento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fundoInvestimento",
+            cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Aplicacao> aplicacoes;
 
 }
