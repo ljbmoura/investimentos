@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
-import org.springframework.kafka.support.converter.JsonMessageConverter;
-import org.springframework.kafka.support.converter.RecordMessageConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +29,10 @@ public class ConfiguracaoKafka {
         return new KafkaAdmin(configs);
     }*/
 
-    @Bean
-    public RecordMessageConverter converter() {
-        return new JsonMessageConverter();
-    }
+//    @Bean
+//    public RecordMessageConverter converter() {
+//        return new JsonMessageConverter();
+//    }
 
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
     public KafkaStreamsConfiguration ksConfiguracaoBase(KafkaProperties streamsConfig) {
@@ -47,7 +45,7 @@ public class ConfiguracaoKafka {
         props.forEach((k, v) -> log.debug("propriedade '{}' ={}", k, v));
         return new KafkaStreamsConfiguration(props);
     }
-
+/*
     @Bean (name = "atualizador-serie-coeficientes-SELIC")
     public StreamsBuilderFactoryBean fabricaParaAtualizadorSerieCoeficientesSELIC(KafkaStreamsConfiguration ksConfiguracaoBase) {
         Map<String, Object> props = new HashMap<>();
@@ -56,4 +54,5 @@ public class ConfiguracaoKafka {
         KafkaStreamsConfiguration configAplicacao = new KafkaStreamsConfiguration(props);
         return new StreamsBuilderFactoryBean(configAplicacao);
     }
+*/
 }

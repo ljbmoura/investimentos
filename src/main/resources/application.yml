@@ -5,7 +5,7 @@ logging:
   level:
     root: info
     org.apache.kafka: warn
-    br.com.ljbm: debug
+    br.com.ljbm: info
     io.confluent: warn
     org.springframework.kafka.config: warn
 
@@ -54,6 +54,7 @@ spring:
               packages: br.com.ljbm.dto
         spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+#        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
 
 aplicacao:
   topicos:

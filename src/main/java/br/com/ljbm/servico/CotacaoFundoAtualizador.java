@@ -26,11 +26,11 @@ public class CotacaoFundoAtualizador {
 	private final CotacaoFundoRepo cotacaoFundoRepo;
 
 	ExecutorService executorService = Executors.newFixedThreadPool(30);
-/*
+
 	@KafkaListener (
-			id = "CF-Group",
+			id = "cotacaoFundo",
 			topics = "cotacoes-fundos",
-			groupId = "CF",
+			groupId = "cotacaoFundoGroup",
 			concurrency = "3") // pois o tópico foi criado com 3 partições
 	@Transactional
 	public void atualizacaoCotacaoFundoListen (ConsumerRecord<String, CotacaoFundoDTO> mensagem) {
@@ -50,5 +50,5 @@ public class CotacaoFundoAtualizador {
 			}
 		});
 	}
-*/
+
 }
