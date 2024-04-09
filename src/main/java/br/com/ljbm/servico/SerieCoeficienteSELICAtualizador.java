@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 
 
@@ -32,6 +33,9 @@ public class SerieCoeficienteSELICAtualizador {
 	@Value (value = "${aplicacao.topicos.cotacoes-fundos}")
 	private String TOPICO_COTACOES_POR_FUNDO;
 
+	@Value (value = "${aplicacao.topicos.periodo-remuneracao-selic}")
+	private String TOPICO_PERIODO_REMUNERACAO_SELIC;
+
 	@Autowired
 	private AplicacaoRepo aplicacaoRepositorio;
 
@@ -42,28 +46,12 @@ public class SerieCoeficienteSELICAtualizador {
 	public void carregaSerieCoeficientesSELICPipeline(@Qualifier("atualizador-serie-coeficientes-SELIC") StreamsBuilder streamsBuilder) {
 
 		KStream<String, CotacaoFundoDTO> cotacoesPorFundo = streamsBuilder.stream
-			(TOPICO_COTACOES_POR_FUNDO);
-//			(TOPICO_COTACOES_POR_FUNDO, Consumed.with(Serdes.String(), new JSONSerde<CotacaoFundoDTO>()));
+			(TOPICO_COTACOES_POR_FUNDO); // , Consumed.with(Serdes.String(), new JSONSerde<CotacaoFundoDTO>()));
 
-		cotacoesPorFundo.peek((ideFundo, cotacao)-> log.info("chave fundo={} cotação={} recebida da partição", ideFundo, cotacao));
-
-//		chave 27 valor 2006-05-30
-//		chave 27 valor 2006-09-25
-//		chave fundo=27 cotação={"nomeFundo":"Ações Petrobras","dataCotacao":[2024,3,28],"valorCota":23.996366000} recebida da partição
-//		ObjectMapper m = JsonMapper.builder()
-//				.addModule(new JavaTimeModule())
-//				.build();
+		cotacoesPorFundo.peek((ideFundo, cotacao)-> log.debug("Cotação por Fundo k={} v={} recebida", ideFundo, cotacao));
 
  		cotacoesPorFundo
-				//.filter((k, v) -> v != null)
-				.map( (fundoIde, cotacao) -> {
-					// FIXME refazer quando conseguir uma KStream<String, CotacaoFundoDTO>
-					//int posIniData = cotacao.indexOf("[");
-					//int posFimData = cotacao.indexOf("]", posIniData + 1);
-					//String[] _dataCotacao = cotacao.substring(posIniData + 1, posFimData).split(",");
-					//var dataCotacao = LocalDate.of(Integer.parseInt(_dataCotacao[0]), Integer.parseInt(_dataCotacao[1]), Integer.parseInt(_dataCotacao[2]));
-					return new KeyValue<>(cotacao.getDataCotacao(), fundoIde) ;
-				})
+				.map( (fundoIde, cotacao) -> new KeyValue<>(cotacao.dataCotacao(), fundoIde))
 
 				.flatMap( (dataCotacao, fundoIde) -> {
 					var fi =  fundoInvestimentoRepositorio.findById(Long.valueOf(fundoIde));
@@ -86,14 +74,13 @@ public class SerieCoeficienteSELICAtualizador {
 
 				.toStream()
 
-				.map( (inicio, fim) -> new KeyValue<>(inicio, new PeriodoRemuneracaoSELICDTO(inicio, fim)))
+				.map( (inicio, fim) -> new KeyValue<>(inicio, new PeriodoRemuneracaoSELICDTO(LocalDate.parse(inicio), LocalDate.parse(fim))))
 
-				.peek((k, v) -> log.info("chave {} valor {} enviada para topico", k, v))
+				.peek((k, v) -> log.debug("Enviando k={} v={} para {}", k, v, TOPICO_PERIODO_REMUNERACAO_SELIC))
 
-				.to("periodo-remuneracao-selic")
+				.to(TOPICO_PERIODO_REMUNERACAO_SELIC)
 		;
 	}
-
 
 	@KafkaListener(
 			id = "pccrSELIC",
@@ -101,10 +88,8 @@ public class SerieCoeficienteSELICAtualizador {
 			groupId = "pccrSELICGroup",
 			concurrency = "3") // pois o tópico foi criado com 3 partições
 	@Transactional
-//	public void obtemCoeficienteRemuneracaoSELIC (ConsumerRecord<String, PeriodoRemuneracaoSELICDTO> mensagem) {
 	public void obtemCoeficienteRemuneracaoSELIC (ConsumerRecord<String, PeriodoRemuneracaoSELICDTO> mensagem) {
 //		executorService.submit( () -> {
-//		org.springframework.kafka.support.serializer.Json
 		var chave = mensagem.key();
 		var valor = mensagem.value();
 		var particao = mensagem.partition();

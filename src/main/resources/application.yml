@@ -5,7 +5,7 @@ logging:
   level:
     root: info
     org.apache.kafka: warn
-    br.com.ljbm: info
+    br.com.ljbm: debug
     io.confluent: warn
     org.springframework.kafka.config: warn
 
@@ -59,3 +59,4 @@ spring:
 aplicacao:
   topicos:
     cotacoes-fundos: cotacoes-fundos
+    periodo-remuneracao-selic: periodo-remuneracao-selic

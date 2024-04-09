@@ -110,7 +110,7 @@ public class CotacaoFundosIntegracao {
 		filtro.setTipoFundoInvestimento(tfi);
         for (FundoInvestimento f : fundoInvestimentoRepo.findAll(Example.of(filtro))) {
             cotacoes.stream()
-				.filter(d -> d.getNomeFundo().trim().equals(f.getNome().trim()))
+				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cotacaoFI -> {
 					// Fixme talvez seja o caso de não usar chave neste tópico para que a
 					// distribuição nas partições seja round-robin.

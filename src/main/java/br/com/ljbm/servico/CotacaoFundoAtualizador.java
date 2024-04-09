@@ -40,7 +40,7 @@ public class CotacaoFundoAtualizador {
 			var particao = mensagem.topic();
 			log.debug("k={} v={} recebida da partição {}", chaveFundoInvestimento, cfDTO, particao);
 			try {
-				var cf = new CotacaoFundo(cfDTO.getDataCotacao(), cfDTO.getValorCota(),
+				var cf = new CotacaoFundo(cfDTO.dataCotacao(), cfDTO.valorCota(),
 						fundoInvestimentoRepo.getReferenceById(Long.valueOf(chaveFundoInvestimento)));
 				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(cf);
 				log.info("sincronizada {}.", cMerged);

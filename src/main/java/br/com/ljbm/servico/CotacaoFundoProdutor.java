@@ -13,12 +13,12 @@ import org.springframework.kafka.core.KafkaTemplate;
 @RequiredArgsConstructor
 public class CotacaoFundoProdutor {
     @Value (value = "${aplicacao.topicos.cotacoes-fundos}")
-    private String TOPICO_DESTINO;
+    private String TOPICO_COTACOES_POR_FUNDO;
 
     private final KafkaTemplate<String, CotacaoFundoDTO> kafkaTemplate;
     public void sendMessage(String chave, CotacaoFundoDTO valor) {
 
-        kafkaTemplate.send(new ProducerRecord<>(TOPICO_DESTINO, chave, valor));
-        log.info("k={} v={} enviada", chave, valor);
+        kafkaTemplate.send(new ProducerRecord<>(TOPICO_COTACOES_POR_FUNDO, chave, valor));
+        log.info("k={} v={} enviada para {}", chave, valor, TOPICO_COTACOES_POR_FUNDO);
     }
 }
