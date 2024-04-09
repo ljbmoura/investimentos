@@ -1,13 +1,14 @@
 package br.com.ljbm.configuracao;
 
+import br.com.ljbm.utilitarios.JSONSerde;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 
@@ -34,18 +35,23 @@ public class ConfiguracaoKafka {
 //        return new JsonMessageConverter();
 //    }
 
-    @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
+//    @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
+    @Bean
     public KafkaStreamsConfiguration ksConfiguracaoBase(KafkaProperties streamsConfig) {
         Map<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, JSONSerde.class);
+//        props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 0);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000L);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         var adminProps = streamsConfig.buildAdminProperties(null);
         props.putAll(adminProps);
         props.forEach((k, v) -> log.debug("propriedade '{}' ={}", k, v));
         return new KafkaStreamsConfiguration(props);
     }
-/*
+
     @Bean (name = "atualizador-serie-coeficientes-SELIC")
     public StreamsBuilderFactoryBean fabricaParaAtualizadorSerieCoeficientesSELIC(KafkaStreamsConfiguration ksConfiguracaoBase) {
         Map<String, Object> props = new HashMap<>();
@@ -54,5 +60,5 @@ public class ConfiguracaoKafka {
         KafkaStreamsConfiguration configAplicacao = new KafkaStreamsConfiguration(props);
         return new StreamsBuilderFactoryBean(configAplicacao);
     }
-*/
+
 }

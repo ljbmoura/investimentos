@@ -1,22 +1,13 @@
 package br.com.ljbm.servico;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+import br.com.ljbm.dto.CotacaoFundoDTO;
+import br.com.ljbm.dto.TreasuryBondsInfoDTO;
+import br.com.ljbm.modelo.FundoInvestimento;
+import br.com.ljbm.modelo.TipoFundoInvestimento;
+import br.com.ljbm.repositorio.FundoInvestimentoRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
@@ -26,13 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.com.ljbm.dto.CotacaoFundoDTO;
-import br.com.ljbm.modelo.FundoInvestimento;
-import br.com.ljbm.modelo.TipoFundoInvestimento;
-import br.com.ljbm.repositorio.FundoInvestimentoRepo;
-import br.com.ljbm.dto.TreasuryBondsInfoDTO;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -119,7 +110,7 @@ public class CotacaoFundosIntegracao {
 		filtro.setTipoFundoInvestimento(tfi);
         for (FundoInvestimento f : fundoInvestimentoRepo.findAll(Example.of(filtro))) {
             cotacoes.stream()
-				.filter(d -> d.nomeFundo().trim().equals(f.getNome().trim()))
+				.filter(d -> d.getNomeFundo().trim().equals(f.getNome().trim()))
                 .findFirst().ifPresent(cotacaoFI -> {
 					// Fixme talvez seja o caso de não usar chave neste tópico para que a
 					// distribuição nas partições seja round-robin.
