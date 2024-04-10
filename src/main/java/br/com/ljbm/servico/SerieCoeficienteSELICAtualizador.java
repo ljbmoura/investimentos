@@ -3,8 +3,11 @@ package br.com.ljbm.servico;
 import br.com.ljbm.dto.CotacaoFundoDTO;
 import br.com.ljbm.dto.PeriodoRemuneracaoSELICDTO;
 import br.com.ljbm.modelo.Aplicacao;
+import br.com.ljbm.modelo.SerieCoeficienteSELIC;
 import br.com.ljbm.repositorio.AplicacaoRepo;
 import br.com.ljbm.repositorio.FundoInvestimentoRepo;
+import br.com.ljbm.repositorio.SerieCoeficienteSELICRepo;
+import br.com.ljbm.servico.selic.Selic;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.Serdes;
@@ -41,6 +44,12 @@ public class SerieCoeficienteSELICAtualizador {
 
 	@Autowired
 	private FundoInvestimentoRepo fundoInvestimentoRepositorio;
+
+	@Autowired
+	private SerieCoeficienteSELICRepo serieCoeficienteSELICRepositorio;
+
+	@Autowired
+	private Selic selicWS;
 
 	@Autowired
 	public void carregaSerieCoeficientesSELICPipeline(@Qualifier("atualizador-serie-coeficientes-SELIC") StreamsBuilder streamsBuilder) {
@@ -89,20 +98,20 @@ public class SerieCoeficienteSELICAtualizador {
 			concurrency = "3") // pois o tópico foi criado com 3 partições
 	@Transactional
 	public void obtemCoeficienteRemuneracaoSELIC (ConsumerRecord<String, PeriodoRemuneracaoSELICDTO> mensagem) {
-//		executorService.submit( () -> {
-		var chave = mensagem.key();
-		var valor = mensagem.value();
-		var particao = mensagem.partition();
-		log.info("k={} v={} recebida da partição {}", chave, valor, particao);
-//			try {
-//				var cf = new CotacaoFundo(cfDTO.dataCotacao(), cfDTO.valorCota(),
-//						fundoInvestimentoRepo.getReferenceById(Long.valueOf(chaveFundoInvestimento)));
-//				CotacaoFundo cMerged = cotacaoFundoRepo.mergePorDataFundo(cf);
-//				log.info("sincronizada {}.", cMerged);
-//			} catch (DataIntegrityViolationException e) {
-//				log.error(e.getLocalizedMessage());
-//			}
-//		});
+//	executorService.submit( () -> {
+		var periodo = mensagem.value();
+		log.debug("k={} v={} recebida da partição {}", mensagem.key(), periodo, mensagem.partition());
+        if (!serieCoeficienteSELICRepositorio.existeCoeficienteSELIC(periodo.inicio(), periodo.fim())) {
+			try {
+				BigDecimal fatorRemuneracaoAcumuladaSELIC = selicWS.fatorAcumuladoSelic(periodo.inicio(), periodo.fim());
+				SerieCoeficienteSELIC remuneracao = new SerieCoeficienteSELIC(periodo.inicio(), periodo.fim(), fatorRemuneracaoAcumuladaSELIC);
+				log.debug("salvando {}", remuneracao);
+				serieCoeficienteSELICRepositorio.save(remuneracao);
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage());
+			}
+        }
+//	});
 	}
 
 }

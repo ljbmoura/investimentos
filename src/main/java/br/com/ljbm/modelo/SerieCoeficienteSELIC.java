@@ -27,15 +27,21 @@ public class SerieCoeficienteSELIC implements java.io.Serializable {
 	@Column(name = "datainicio", nullable = false)
 	@NotNull
 	//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate dataFim;
+	private LocalDate dataInicio;
 
 	@Column(name = "datafim", nullable = false)
 	@NotNull
 	//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate dataInicio;
+	private LocalDate dataFim;
 
 	@Column(name = "fator", nullable = false, precision = 19, scale = 6)
 	@NotNull
 	private BigDecimal fator;
+
+	public SerieCoeficienteSELIC(LocalDate dataInicio, LocalDate dataFim, BigDecimal fator) {
+		this.dataInicio = dataInicio;
+		this.dataFim = dataFim;
+		this.fator = fator;
+	}
 
 }
