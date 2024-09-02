@@ -3,7 +3,7 @@ server:
 
 logging:
   level:
-    root: info
+    root: warn
     org.apache.kafka: warn
     br.com.ljbm: debug
     io.confluent: warn
